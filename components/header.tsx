@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Menu, X, ShoppingBag, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -59,11 +60,15 @@ export function Header() {
 
           {/* Logo - Center */}
           <Link href="/" className="flex flex-col items-center">
-            <img
-              src="/images/mbjlogo.png"
-              alt="MBJ Exclusive Logo"
-              className="h-12 md:h-14 w-auto object-contain"
-            />
+            <div className="relative h-12 md:h-14 w-32 md:w-40">
+              <Image
+                src="/images/mbjlogo.png"
+                alt="MBJ Exclusive Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation - Right */}
@@ -107,7 +112,7 @@ export function Header() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium tracking-wider text-charcoal hover:text-gold transition-colors duration-300 uppercase py-2"
+                className="text-sm font-medium tracking-wider text-charcoal hover:text-gold transition-colors duration-300 uppercase py-4 border-b border-border/50 last:border-0"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}

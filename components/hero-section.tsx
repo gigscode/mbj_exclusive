@@ -1,6 +1,8 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
@@ -29,11 +31,15 @@ export function HeroSection() {
             }`}
         >
           {/* Logo */}
-          <img
-            src="/images/mbjfulllogo.png"
-            alt="MBJ Exclusive"
-            className="h-32 md:h-48 lg:h-56 w-auto mx-auto mb-8"
-          />
+          <div className="relative h-32 md:h-48 lg:h-56 w-full max-w-2xl mx-auto mb-8">
+            <Image
+              src="/images/mbjfulllogo.png"
+              alt="MBJ Exclusive"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
 
           {/* Headline */}
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-charcoal mb-6 tracking-tight">
@@ -47,19 +53,23 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-gold hover:bg-gold-dark text-charcoal px-10 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 hover:shadow-lg rounded-full"
-            >
-              Shop Collection
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream px-10 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 rounded-full bg-transparent"
-            >
-              Book a Fitting
-            </Button>
+            <Link href="/shop">
+              <Button
+                size="lg"
+                className="bg-gold hover:bg-gold-dark text-charcoal px-10 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 hover:shadow-lg rounded-full w-full sm:w-auto"
+              >
+                Shop Collection
+              </Button>
+            </Link>
+            <Link href="/#booking">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream px-10 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 rounded-full bg-transparent w-full sm:w-auto"
+              >
+                Book a Fitting
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
@@ -81,23 +82,24 @@ export function ProductGrid() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {products.map((product, index) => (
             <div
               key={product.name}
-              className={`group cursor-pointer transition-all duration-700 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-              }`}
+              className={`group cursor-pointer transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
-                <img
+                <Image
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                {/* Quick view button */}
-                <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                {/* Quick view button - Desktop Hover */}
+                <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
                   <Button
                     size="sm"
                     className="bg-cream text-charcoal hover:bg-gold transition-colors duration-300 rounded-full px-6"
@@ -106,6 +108,15 @@ export function ProductGrid() {
                     Quick View
                   </Button>
                 </div>
+
+                {/* Mobile Quick View Button */}
+                <Button
+                  size="icon"
+                  className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
+                  aria-label="Quick view"
+                >
+                  <Eye className="w-5 h-5" />
+                </Button>
               </div>
               <h3 className="font-medium text-charcoal group-hover:text-gold transition-colors duration-300 text-sm lg:text-base">
                 {product.name}

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Instagram, Facebook } from "lucide-react"
 
 // TikTok icon component since lucide doesn't have it
@@ -40,11 +41,14 @@ export function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <img
-              src="/images/mbjlogo.png"
-              alt="MBJ Exclusive"
-              className="h-24 w-auto mb-6 brightness-0 invert"
-            />
+            <div className="relative h-24 w-48 mb-6">
+              <Image
+                src="/images/mbjfulllogo.png"
+                alt="MBJ Exclusive"
+                fill
+                className="object-contain brightness-0 invert"
+              />
+            </div>
             <p className="text-cream/70 leading-relaxed max-w-sm mb-6">
               Redefining Nigerian luxury fashion for the modern woman. Where tradition meets contemporary elegance.
             </p>
@@ -80,7 +84,7 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/70 hover:text-gold transition-colors duration-300">
+                  <a href={link.href} className="block py-1 text-cream/70 hover:text-gold transition-colors duration-300">
                     {link.name}
                   </a>
                 </li>
@@ -94,7 +98,7 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.collections.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/70 hover:text-gold transition-colors duration-300">
+                  <a href={link.href} className="block py-1 text-cream/70 hover:text-gold transition-colors duration-300">
                     {link.name}
                   </a>
                 </li>
@@ -108,7 +112,7 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/70 hover:text-gold transition-colors duration-300">
+                  <a href={link.href} className="block py-1 text-cream/70 hover:text-gold transition-colors duration-300">
                     {link.name}
                   </a>
                 </li>

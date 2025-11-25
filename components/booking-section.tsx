@@ -26,7 +26,7 @@ export function BookingSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
+    <section id="booking" ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img

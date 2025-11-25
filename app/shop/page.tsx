@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
 
+import { Header } from '@/components/header';
+
 export default function ShopPage() {
     const [selectedCategory, setSelectedCategory] = useState<Category>('all');
     const [sortBy, setSortBy] = useState<SortOption>('newest');
@@ -38,6 +40,7 @@ export default function ShopPage() {
 
     return (
         <div className="min-h-screen bg-background">
+            <Header />
             {/* Hero Section */}
             <section className="relative bg-charcoal text-cream py-20 lg:py-28">
                 <div className="container mx-auto px-4 lg:px-8 text-center">
