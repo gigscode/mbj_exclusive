@@ -1,0 +1,31 @@
+{
+    "name": "MBJ EXCLUSIVE",
+    "short_name": "MBJ",
+    "description": "Redefining Nigerian luxury fashion for the modern woman. Handcrafted couture, premium materials, and perfect fit guaranteed.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#b8860b",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "shopping",
+        "lifestyle"
+    ],
+    "screenshots": [],
+    "shortcuts": []
+}
