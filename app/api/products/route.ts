@@ -1,11 +1,22 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+
+// Force this route to be dynamic (not statically generated at build time)
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+// Lazy load supabase to prevent build-time errors
+function getSupabaseClient() {
+    const { supabase } = require("@/lib/supabase")
+    return supabase
+}
 
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url)
         const category = searchParams.get("category")
         const limit = searchParams.get("limit")
+
+        const supabase = getSupabaseClient()
 
         let query = supabase
             .from("products")
@@ -28,7 +39,7 @@ export async function GET(request: Request) {
         if (error) throw error
 
         // Format response to match frontend Product type
-        const products = (data || []).map((item) => ({
+        const products = (data || []).map((item: any) => ({
             id: item.id,
             name: item.name,
             description: item.description,
