@@ -18,6 +18,7 @@ import { Plus, Search, Edit, Trash2, Package } from "lucide-react"
 import type { Product } from "@/lib/types"
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog"
 
+// Main products page component
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([])
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -58,7 +59,7 @@ export default function ProductsPage() {
             if (error) throw error
 
             // Convert database format to app format
-            const formattedProducts: Product[] = (data || []).map((item) => ({
+            const formattedProducts: Product[] = (data || []).map((item: any) => ({
                 id: item.id,
                 name: item.name,
                 description: item.description,
@@ -91,9 +92,9 @@ export default function ProductsPage() {
             // Reload products after deletion
             await loadProducts()
             setDeleteProduct(null)
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error deleting product:", error)
-            alert("Failed to delete product")
+            alert(`Failed to delete product: ${error.message || "Unknown error"}`)
         }
     }
 

@@ -87,9 +87,9 @@ export function ImageUpload({ images, onImagesChange, maxImages = 5 }: ImageUplo
 
             // Add to images array
             onImagesChange([...images, publicUrl])
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error uploading image:", error)
-            alert("Failed to upload image. Make sure the 'product-images' bucket exists in Supabase Storage.")
+            alert(`Failed to upload image: ${error.message || "Unknown error"}. Make sure the 'product-images' bucket exists and is public.`)
         } finally {
             setUploading(false)
         }
@@ -109,8 +109,8 @@ export function ImageUpload({ images, onImagesChange, maxImages = 5 }: ImageUplo
             {/* Upload Area */}
             <div
                 className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all ${dragActive
-                        ? "border-gold bg-gold/5"
-                        : "border-gray-300 hover:border-gold/50"
+                    ? "border-gold bg-gold/5"
+                    : "border-gray-300 hover:border-gold/50"
                     } ${images.length >= maxImages ? "opacity-50 pointer-events-none" : ""}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
