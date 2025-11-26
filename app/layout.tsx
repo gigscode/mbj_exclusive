@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { PWAInstaller } from "@/components/pwa-installer"
 import { CartProvider } from "@/contexts/cart-context"
+import { AdminProvider } from "@/contexts/admin-context"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -47,11 +48,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="MBJ EXCLUSIVE" />
       </head>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        <CartProvider>
-          {children}
-          <PWAInstaller />
-          <Analytics />
-        </CartProvider>
+        <AdminProvider>
+          <CartProvider>
+            {children}
+            <PWAInstaller />
+            <Analytics />
+          </CartProvider>
+        </AdminProvider>
       </body>
     </html>
   )
