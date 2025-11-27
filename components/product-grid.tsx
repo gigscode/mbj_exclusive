@@ -13,6 +13,7 @@ export function ProductGrid() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
+  const [currentImageIndexes, setCurrentImageIndexes] = useState<Record<string, number>>({})
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -120,13 +121,47 @@ export function ProductGrid() {
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
+                    {/* Image Display */}
                     <Image
-                      src={product.images[0] || "/placeholder.svg"}
+                      src={product.images[currentImageIndexes[product.id] || 0] || "/placeholder.svg"}
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-all duration-500 group-hover:scale-105"
                     />
+
+                    {/* Image Navigation Dots - Only show if multiple images */}
+                    {product.images.length > 1 && (
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        {product.images.map((_, imgIndex) => (
+                          <button
+                            key={imgIndex}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              setCurrentImageIndexes(prev => ({
+                                ...prev,
+                                [product.id]: imgIndex
+                              }))
+                            }}
+                            onMouseEnter={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              setCurrentImageIndexes(prev => ({
+                                ...prev,
+                                [product.id]: imgIndex
+                              }))
+                            }}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${(currentImageIndexes[product.id] || 0) === imgIndex
+                                ? 'w-6 bg-gold'
+                                : 'w-1.5 bg-white/60 hover:bg-white/80'
+                              }`}
+                            aria-label={`View image ${imgIndex + 1}`}
+                          />
+                        ))}
+                      </div>
+                    )}
+
                     {/* Quick view button - Desktop Hover */}
                     <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <Button
@@ -141,7 +176,7 @@ export function ProductGrid() {
                     {/* Mobile Quick View Button */}
                     <Button
                       size="icon"
-                      className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
+                      className="absolute top-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
                       aria-label="Quick view"
                     >
                       <Eye className="w-5 h-5" />

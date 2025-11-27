@@ -16,6 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
     const { addToCart } = useCart();
     const [isHovered, setIsHovered] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const handleAddToCart = () => {
         addToCart(product, 1, product.sizes[0], product.colors[0]);
@@ -40,15 +41,43 @@ export function ProductCard({ product }: ProductCardProps) {
             {/* Image Container */}
             <div className="relative aspect-[3/4] overflow-hidden bg-muted">
                 <Image
-                    src={product.images[0]}
+                    src={product.images[currentImageIndex] || product.images[0]}
                     alt={product.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className={cn(
-                        'object-cover transition-transform duration-500',
+                        'object-cover transition-all duration-500',
                         isHovered && 'scale-110'
                     )}
                 />
+
+                {/* Image Navigation Dots - Only show if multiple images */}
+                {product.images.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+                        {product.images.map((_, imgIndex) => (
+                            <button
+                                key={imgIndex}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setCurrentImageIndex(imgIndex);
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setCurrentImageIndex(imgIndex);
+                                }}
+                                className={cn(
+                                    'h-1.5 rounded-full transition-all duration-300',
+                                    currentImageIndex === imgIndex
+                                        ? 'w-6 bg-gold'
+                                        : 'w-1.5 bg-white/60 hover:bg-white/80'
+                                )}
+                                aria-label={`View image ${imgIndex + 1}`}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 {/* Overlay on Hover - Visible on mobile, hover on desktop */}
                 <div
@@ -89,7 +118,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 <Button
                     size="icon"
                     onClick={handleAddToCart}
-                    className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-gold text-charcoal shadow-lg lg:hidden"
+                    className="absolute top-3 right-3 h-10 w-10 rounded-full bg-gold text-charcoal shadow-lg lg:hidden"
                     aria-label="Add to cart"
                 >
                     <ShoppingBag className="w-5 h-5" />
