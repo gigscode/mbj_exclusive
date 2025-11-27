@@ -24,6 +24,11 @@ export function PWAInstaller() {
                 .catch((error) => {
                     console.error('Service Worker registration failed:', error);
                 });
+
+            // Reload page when service worker updates
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
         }
 
         // Listen for install prompt (Android)

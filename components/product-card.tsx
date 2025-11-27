@@ -79,7 +79,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     <Button
                         size="sm"
                         variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-charcoal"
+                        className="border-white text-red-500 hover:bg-white hover:text-green-900"
                     >
                         <Heart className="w-4 h-4" />
                     </Button>
