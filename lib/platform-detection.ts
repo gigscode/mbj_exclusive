@@ -7,14 +7,19 @@ export function isMobileDevice(): boolean {
 
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
 
-    // Check for mobile devices
-    const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+    // Exclude tablets - only target small mobile devices (phones)
+    const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent.toLowerCase());
+    if (isTablet) return false;
+
+    // Check for mobile phone devices only
+    const mobileRegex = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i;
     const isMobile = mobileRegex.test(userAgent.toLowerCase());
 
-    // Additional check for tablet devices
-    const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent.toLowerCase());
+    // Additional check: screen width must be small (typical phone size)
+    // This ensures desktop browsers aren't treated as mobile
+    const isSmallScreen = window.innerWidth <= 768;
 
-    return isMobile || isTablet;
+    return isMobile && isSmallScreen;
 }
 
 export function isStandalone(): boolean {

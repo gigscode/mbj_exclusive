@@ -6,8 +6,11 @@ import { isMobileDevice, canInstallPWA, getPlatform } from '@/lib/platform-detec
 export function PWAInstaller() {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
+        setIsMounted(true);
+
         // Only register service worker on mobile devices
         if (!isMobileDevice()) {
             console.log('PWA features disabled on desktop');
@@ -63,8 +66,8 @@ export function PWAInstaller() {
         setShowInstallPrompt(false);
     };
 
-    // Don't render anything on desktop
-    if (!isMobileDevice()) {
+    // Prevent hydration mismatch and don't render on desktop
+    if (!isMounted || !isMobileDevice()) {
         return null;
     }
 
