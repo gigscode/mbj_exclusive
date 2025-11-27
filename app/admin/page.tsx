@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { Product } from "@/lib/types"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -32,14 +33,16 @@ export default function AdminDashboard() {
                     .from("products")
                     .select("category")
 
+                const typedProducts = products as Pick<Product, "category">[] | null
+
                 if (error) throw error
 
                 const stats: Stats = {
-                    totalProducts: products?.length || 0,
-                    dresses: products?.filter((p) => p.category === "dresses").length || 0,
-                    gowns: products?.filter((p) => p.category === "gowns").length || 0,
-                    separates: products?.filter((p) => p.category === "separates").length || 0,
-                    bridal: products?.filter((p) => p.category === "bridal").length || 0,
+                    totalProducts: typedProducts?.length || 0,
+                    dresses: typedProducts?.filter((p) => p.category === "dresses").length || 0,
+                    gowns: typedProducts?.filter((p) => p.category === "gowns").length || 0,
+                    separates: typedProducts?.filter((p) => p.category === "separates").length || 0,
+                    bridal: typedProducts?.filter((p) => p.category === "bridal").length || 0,
                 }
 
                 setStats(stats)
@@ -142,7 +145,7 @@ export default function AdminDashboard() {
                 </CardContent>
             </Card>
 
-            {/* Recent Activity or Additional Info */}
+            {/* Recent Activity or Additional Info 
             <Card className="border-gold/20">
                 <CardHeader>
                     <CardTitle className="text-xl font-serif text-charcoal">Getting Started</CardTitle>
@@ -179,7 +182,7 @@ export default function AdminDashboard() {
                         </li>
                     </ul>
                 </CardContent>
-            </Card>
+            </Card>*/}
         </div>
     )
 }

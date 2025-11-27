@@ -8,6 +8,7 @@ export interface Product {
     sizes: string[];
     colors: string[];
     inStock: boolean;
+    is_featured?: boolean;
 }
 
 export interface CartItem {

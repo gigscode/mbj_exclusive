@@ -24,7 +24,21 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        // Get initial session
+        supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (error) {
+                console.error('Error getting session:', error)
+                if (error.message.includes('Refresh Token Not Found') || error.message.includes('Invalid Refresh Token')) {
+                    // Force sign out if refresh token is invalid
+                    supabase.auth.signOut().then(() => {
+                        setSession(null)
+                        setUser(null)
+                        setLoading(false)
+                        router.push('/admin/login')
+                    })
+                    return
+                }
+            }
             setSession(session)
             setUser(session?.user ?? null)
             setLoading(false)
@@ -33,10 +47,28 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // Listen for auth changes
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-            setLoading(false)
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_OUT') {
+                // handle sign out event
+                setSession(null)
+                setUser(null)
+                setLoading(false)
+                router.push('/admin/login')
+            } else if (event === 'PASSWORD_RECOVERY') {
+                // handle password recovery event
+            } else if (event === 'TOKEN_REFRESHED') {
+                // handle token refreshed event
+            } else if (event === 'SIGNED_IN') {
+                // handle sign in event
+                setSession(session)
+                setUser(session?.user ?? null)
+                setLoading(false)
+            } else {
+                // For other events, just update state
+                setSession(session)
+                setUser(session?.user ?? null)
+                setLoading(false)
+            }
         })
 
         return () => subscription.unsubscribe()

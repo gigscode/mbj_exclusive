@@ -35,6 +35,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
         sizes: product?.sizes || [],
         colors: product?.colors || [],
         inStock: product?.inStock ?? true,
+        isFeatured: product?.is_featured ?? false,
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -76,12 +77,13 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                 sizes: formData.sizes,
                 colors: formData.colors,
                 in_stock: formData.inStock,
+                is_featured: formData.isFeatured,
                 updated_at: new Date().toISOString(),
-            }
+            } as any
 
             if (mode === "create") {
-                const { error } = await supabase
-                    .from("products")
+                const { error } = await (supabase
+                    .from("products") as any)
                     .insert([productData])
 
                 if (error) throw error
@@ -89,8 +91,8 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                 alert("Product created successfully!")
                 router.push("/admin/products")
             } else {
-                const { error } = await supabase
-                    .from("products")
+                const { error } = await (supabase
+                    .from("products") as any)
                     .update(productData)
                     .eq("id", product!.id)
 
@@ -229,6 +231,17 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                             Product is in stock
                         </Label>
                     </div>
+
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="isFeatured"
+                            checked={formData.isFeatured}
+                            onCheckedChange={(checked) => setFormData({ ...formData, isFeatured: !!checked })}
+                        />
+                        <Label htmlFor="isFeatured" className="font-normal cursor-pointer">
+                            Featured Product (Show on Home Page)
+                        </Label>
+                    </div>
                 </CardContent>
             </Card>
 
@@ -260,8 +273,8 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                                 type="button"
                                 onClick={() => toggleSize(size)}
                                 className={`px-6 py-2 rounded-lg border-2 font-semibold transition-all ${formData.sizes.includes(size)
-                                        ? "border-gold bg-gold text-charcoal"
-                                        : "border-gray-300 text-gray-700 hover:border-gold/50"
+                                    ? "border-gold bg-gold text-charcoal"
+                                    : "border-gray-300 text-gray-700 hover:border-gold/50"
                                     }`}
                             >
                                 {size}
@@ -285,8 +298,8 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                                 type="button"
                                 onClick={() => toggleColor(color)}
                                 className={`px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm ${formData.colors.includes(color)
-                                        ? "border-gold bg-gold text-charcoal"
-                                        : "border-gray-300 text-gray-700 hover:border-gold/50"
+                                    ? "border-gold bg-gold text-charcoal"
+                                    : "border-gray-300 text-gray-700 hover:border-gold/50"
                                     }`}
                             >
                                 {color}

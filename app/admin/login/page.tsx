@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
                             </div>
                         </div>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="mt-6">
                         <Button
                             type="submit"
                             className="w-full bg-gold hover:bg-gold/90 text-charcoal font-semibold py-6 text-base transition-all duration-300"

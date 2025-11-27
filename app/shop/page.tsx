@@ -1,19 +1,58 @@
 'use client';
 
-import { useState } from 'react';
-import { products, categories } from '@/lib/products-data';
-import { Category, SortOption } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import { categories } from '@/lib/products-data';
+import { Category, SortOption, Product } from '@/lib/types';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter } from 'lucide-react';
-
 import { Header } from '@/components/header';
+import { supabase } from '@/lib/supabase';
 
 export default function ShopPage() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState<Category>('all');
     const [sortBy, setSortBy] = useState<SortOption>('newest');
-    const [showFilters, setShowFilters] = useState(false);
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('products')
+                .select('*');
+
+            if (error) {
+                console.error('Error fetching products:', error);
+                return;
+            }
+
+            if (data) {
+                // Map Supabase data to Product type
+                const mappedProducts: Product[] = (data as any[]).map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    price: Number(item.price),
+                    category: item.category,
+                    images: item.images || [],
+                    sizes: item.sizes || [],
+                    colors: item.colors || [],
+                    inStock: item.in_stock,
+                    is_featured: item.is_featured,
+                }));
+                setProducts(mappedProducts);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Filter products
     const filteredProducts = products.filter((product) => {
@@ -34,6 +73,9 @@ export default function ShopPage() {
                 return b.name.localeCompare(a.name);
             case 'newest':
             default:
+                // If we had a created_at field we could sort by that, 
+                // for now we'll just use the order they came in (which is usually insertion order or ID)
+                // or we can add created_at to the type if needed.
                 return 0;
         }
     });
@@ -74,7 +116,8 @@ export default function ShopPage() {
                                             : 'border-border hover:border-gold'
                                     }
                                 >
-                                    {category.name} ({category.count})
+                                    {category.name}
+                                    {/* We can't easily show count here without pre-calculating or fetching counts */}
                                 </Button>
                             ))}
                         </div>
@@ -99,18 +142,26 @@ export default function ShopPage() {
 
                     {/* Results Count */}
                     <p className="text-sm text-muted-foreground mb-6">
-                        Showing {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
+                        {loading ? 'Loading products...' : `Showing ${sortedProducts.length} ${sortedProducts.length === 1 ? 'product' : 'products'}`}
                     </p>
 
                     {/* Product Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                        {sortedProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+                            {[...Array(8)].map((_, i) => (
+                                <div key={i} className="aspect-[3/4] bg-muted animate-pulse rounded-lg" />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+                            {sortedProducts.map((product) => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                    )}
 
                     {/* Empty State */}
-                    {sortedProducts.length === 0 && (
+                    {!loading && sortedProducts.length === 0 && (
                         <div className="text-center py-20">
                             <p className="text-muted-foreground text-lg">No products found in this category.</p>
                             <Button

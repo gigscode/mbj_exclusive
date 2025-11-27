@@ -5,52 +5,53 @@ import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 
-const products = [
-  {
-    name: "Velvet Evening Gown",
-    price: "₦485,000",
-    image: "/elegant-red-velvet-evening-gown-african-fashion.jpg",
-  },
-  {
-    name: "Gold Embroidered Kaftan",
-    price: "₦320,000",
-    image: "/gold-embroidered-kaftan-nigerian-fashion.jpg",
-  },
-  {
-    name: "Silk Wrap Dress",
-    price: "₦195,000",
-    image: "/silk-wrap-dress-african-woman-fashion.jpg",
-  },
-  {
-    name: "Lace Aso-Oke Set",
-    price: "₦550,000",
-    image: "/lace-aso-oke-traditional-nigerian-fashion.jpg",
-  },
-  {
-    name: "Beaded Cocktail Dress",
-    price: "₦275,000",
-    image: "/beaded-cocktail-dress-african-glamour.jpg",
-  },
-  {
-    name: "Royal Ankara Ensemble",
-    price: "₦420,000",
-    image: "/royal-ankara-ensemble-african-print-fashion.jpg",
-  },
-  {
-    name: "Sequin Mermaid Gown",
-    price: "₦680,000",
-    image: "/sequin-mermaid-gown-nigerian-glamour-fashion.jpg",
-  },
-  {
-    name: "Chiffon Boubou",
-    price: "₦245,000",
-    image: "/chiffon-boubou-elegant-african-fashion.jpg",
-  },
-]
+import { supabase } from "@/lib/supabase"
+import { Product } from "@/lib/types"
 
 export function ProductGrid() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    fetchFeaturedProducts()
+  }, [])
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_featured', true)
+        .limit(8)
+
+      if (error) {
+        console.error('Error fetching featured products:', error)
+        return
+      }
+
+      if (data) {
+        const mappedProducts: Product[] = (data as any[]).map((item) => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          price: Number(item.price),
+          category: item.category,
+          images: item.images || [],
+          sizes: item.sizes || [],
+          colors: item.colors || [],
+          inStock: item.in_stock,
+          is_featured: item.is_featured,
+        }))
+        setProducts(mappedProducts)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -83,47 +84,52 @@ export function ProductGrid() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {products.map((product, index) => (
-            <div
-              key={product.name}
-              className={`group cursor-pointer transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-                }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
-              <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
-                <Image
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                {/* Quick view button - Desktop Hover */}
-                <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
+          {loading ? (
+            [...Array(4)].map((_, i) => (
+              <div key={i} className="aspect-[4/5] bg-muted animate-pulse rounded-xl" />
+            ))
+          ) : (
+            products.map((product, index) => (
+              <div
+                key={product.id}
+                className={`group cursor-pointer transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                  }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
+                  <Image
+                    src={product.images[0] || "/placeholder.svg"}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Quick view button - Desktop Hover */}
+                  <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <Button
+                      size="sm"
+                      className="bg-cream text-charcoal hover:bg-gold transition-colors duration-300 rounded-full px-6"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Quick View
+                    </Button>
+                  </div>
+
+                  {/* Mobile Quick View Button */}
                   <Button
-                    size="sm"
-                    className="bg-cream text-charcoal hover:bg-gold transition-colors duration-300 rounded-full px-6"
+                    size="icon"
+                    className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
+                    aria-label="Quick view"
                   >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Quick View
+                    <Eye className="w-5 h-5" />
                   </Button>
                 </div>
-
-                {/* Mobile Quick View Button */}
-                <Button
-                  size="icon"
-                  className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
-                  aria-label="Quick view"
-                >
-                  <Eye className="w-5 h-5" />
-                </Button>
+                <h3 className="font-medium text-charcoal group-hover:text-gold transition-colors duration-300 text-sm lg:text-base">
+                  {product.name}
+                </h3>
+                <p className="text-gold font-semibold mt-1">₦{product.price.toLocaleString()}</p>
               </div>
-              <h3 className="font-medium text-charcoal group-hover:text-gold transition-colors duration-300 text-sm lg:text-base">
-                {product.name}
-              </h3>
-              <p className="text-gold font-semibold mt-1">{product.price}</p>
-            </div>
-          ))}
+            )))}
         </div>
 
         {/* View All Button */}

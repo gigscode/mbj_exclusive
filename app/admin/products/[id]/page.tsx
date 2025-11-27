@@ -33,6 +33,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                         sizes: productData.sizes,
                         colors: productData.colors,
                         inStock: productData.in_stock,
+                        is_featured: productData.is_featured,
                     }
                     setProduct(formattedProduct)
                 }
