@@ -137,7 +137,7 @@ export default function AdminDashboard() {
                         </Button>
                     </Link>
                     <Link href="/admin/products">
-                        <Button variant="outline" className="border-gold/30 text-charcoal hover:bg-gold/10">
+                        <Button variant="outline" className="border-gold/30 text-charcoal hover:bg-gold/10 hover:text-blue-900">
                             <Package className="mr-2 h-4 w-4" />
                             View All Products
                         </Button>
