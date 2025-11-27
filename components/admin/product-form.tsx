@@ -35,7 +35,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
         sizes: product?.sizes || [],
         colors: product?.colors || [],
         inStock: product?.inStock ?? true,
-        isFeatured: product?.is_featured ?? false,
+        isFeatured: product?.is_featured ?? true,
     })
 
     const handleSubmit = async (e: React.FormEvent) => {

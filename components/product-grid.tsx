@@ -17,6 +17,28 @@ export function ProductGrid() {
 
   useEffect(() => {
     fetchFeaturedProducts()
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('products-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'products'
+        },
+        () => {
+          // Refetch products when any change occurs
+          fetchFeaturedProducts()
+        }
+      )
+      .subscribe()
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   const fetchFeaturedProducts = async () => {
