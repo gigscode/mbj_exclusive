@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
+import Link from "next/link"
 
 import { supabase } from "@/lib/supabase"
 import { Product } from "@/lib/types"
@@ -90,57 +91,60 @@ export function ProductGrid() {
             ))
           ) : (
             products.map((product, index) => (
-              <div
-                key={product.id}
-                className={`group cursor-pointer transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-                  }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
-                  <Image
-                    src={product.images[0] || "/placeholder.svg"}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  {/* Quick view button - Desktop Hover */}
-                  <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <Link href="/shop" key={product.id}>
+                <div
+                  className={`group cursor-pointer transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                    }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative overflow-hidden rounded-xl bg-muted aspect-[4/5] mb-4 shadow-md group-hover:shadow-xl transition-shadow duration-500">
+                    <Image
+                      src={product.images[0] || "/placeholder.svg"}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {/* Quick view button - Desktop Hover */}
+                    <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-all duration-300 hidden lg:flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <Button
+                        size="sm"
+                        className="bg-cream text-charcoal hover:bg-gold transition-colors duration-300 rounded-full px-6"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Quick View
+                      </Button>
+                    </div>
+
+                    {/* Mobile Quick View Button */}
                     <Button
-                      size="sm"
-                      className="bg-cream text-charcoal hover:bg-gold transition-colors duration-300 rounded-full px-6"
+                      size="icon"
+                      className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
+                      aria-label="Quick view"
                     >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Quick View
+                      <Eye className="w-5 h-5" />
                     </Button>
                   </div>
-
-                  {/* Mobile Quick View Button */}
-                  <Button
-                    size="icon"
-                    className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-cream/90 text-charcoal shadow-lg lg:hidden"
-                    aria-label="Quick view"
-                  >
-                    <Eye className="w-5 h-5" />
-                  </Button>
+                  <h3 className="font-medium text-charcoal group-hover:text-gold transition-colors duration-300 text-sm lg:text-base">
+                    {product.name}
+                  </h3>
+                  <p className="text-gold font-semibold mt-1">₦{product.price.toLocaleString()}</p>
                 </div>
-                <h3 className="font-medium text-charcoal group-hover:text-gold transition-colors duration-300 text-sm lg:text-base">
-                  {product.name}
-                </h3>
-                <p className="text-gold font-semibold mt-1">₦{product.price.toLocaleString()}</p>
-              </div>
+              </Link>
             )))}
         </div>
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream px-12 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 rounded-full bg-transparent"
-          >
-            View All Products
-          </Button>
+          <Link href="/shop">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream px-12 py-6 text-sm tracking-widest uppercase font-medium transition-all duration-300 rounded-full bg-transparent"
+            >
+              View All Products
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

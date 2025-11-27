@@ -14,8 +14,8 @@ export default function Home() {
       <Header />
       <HeroSection />
       <FeaturedCollections />
-      <AboutSection />
       <ProductGrid />
+      <AboutSection />
       <WhyChooseUs />
       <Testimonials />
       <BookingSection />
